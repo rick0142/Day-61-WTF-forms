@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Login</title>
+	</head>
+	<body>
+        <div class="container">
+		<h1>Login</h1>
+
+        <!-- This is where our form will go.-->
+                                                    <!-- novalidate turns off browser validations! -->
+			<form  method="POST" action="{{ url_for('login') }}" novalidate>
+        <!-- Validation:
+                When the form is submitted, Flask-WTF validates that the CSRF token received from the form
+                matches the one stored in the user's session. If they don't match, the request is rejected,
+                preventing potential CSRF attacks.
+        In essence, {{ form.csrf_token }} simplifies the process of integrating CSRF protection into your
+        Flask-WTF forms by automatically handling the generation and inclusion of the necessary hidden token field.
+        -->
+        {{ form.csrf_token }}
+        <p>
+            <!-- As defined in main.py, 'class LoginForm(FlaskForm)'
+            An object 'form' is created referencing the class noted
+
+            email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6,max=30)])
+            password = StringField('Password', validators=[DataRequired(), Length(min=8, max=30)])
+            submit = SubmitField('Login')
+            -->
+            {{ form.email.label }}<br>
+            {{ form.email }}<br>
+            {% for error in form.email.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password }}<br>
+            {% for error in form.password.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <!--
+{% with messages = get_flashed_messages() %}:
+  This line initiates a Jinja2 with block. It calls the Flask function
+get_flashed_messages(), which retrieves any messages that have been "flashed"
+(stored temporarily in the user's session) by the Flask application. These messages
+are then assigned to a template variable named messages.
+
+{% if messages %}:
+ This is a conditional statement that checks if the messages variable contains
+any messages. If get_flashed_messages() returns an empty list (meaning no messages
+were flashed), this block will be skipped.
+
+<ul class="flashes">:
+  If there are messages, an unordered list (<ul>) is rendered. The
+class="flashes" attribute is typically used for styling purposes in CSS, allowing
+developers to visually present these messages.
+
+{% for message in messages %}:
+  This loop iterates through each individual message within the messages list.
+
+<li>{{ message }}</li>:
+  For each message in the list, a list item (<li>) is created, and the content of the message
+is rendered inside it. This displays the actual text of the flashed message to the user.
+
+{% endfor %}:
+  This closes the for loop.
+
+</ul>:
+  This closes the unordered list.
+
+{% endif %}:
+  This closes the if statement.
+
+{% endwith %}:
+  This closes the with block.
+
+In essence, this code block dynamically renders a list of messages that the Flask application
+intends to display to the user, often used for things like success notifications, error messages,
+or warnings.
+    -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+        </div>
+	</body>
+</html>
